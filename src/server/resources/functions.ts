@@ -11,7 +11,7 @@ const vehicleBoat = ["dinghy", "dinghy2", "dinghy3", "dinghy4", "jetmax", "marqu
 const vehicleFlying = ["alphaz1", "avenger", "avenger2", "besra", "blimp", "blimp2", "blimp3", "bombushka", "cargoplane", "cargoplane2", "cuban800", "dodo", "duster", "howard", "hydra", "jet", "lazer", "luxor", "luxor2", "mammatus", "microlight", "miljet", "mogul", "molotok", "nimbus", "nokota", "pyro", "rogue", "seabreeze", "shamal", "starling", "strikeforce", "stunt", "titan", "tula", "velum", "velum2", "vestra", "volatol", "alkonost", "akula", "annihilator", "buzzard", "buzzard2", "cargobob", "cargobob2", "cargobob3", "cargobob4", "frogger", "frogger2", "havok", "hunter", "maverick", "savage", "seasparrow", "skylift", "supervolito", "supervolito2", "swift", "swift2", "valkyrie", "valkyrie2", "volatus", "annihilator2", "seasparrow2", "seasparrow3"]
 const vehicleBike = ["bmx", "cruiser", "fixter", "scorcher", "tribike", "tribike2", "tribike3", "bati", "bati2"];
 const vehiceBikes = ["bmx", "cruiser", "cruiser", "fixter", "scorcher", "tribike", "tribike2", "tribike3"];
-const licenseData = ["driving", "weapon", "boat", "fly"];
+const licenseData = ["driving", "weapon", "boat", "flying"];
 
 /* ---- FUNCTIONS ---- */
 export function select_player_database(player: PlayerMp, rows: any) {
@@ -46,13 +46,7 @@ export function select_player_database(player: PlayerMp, rows: any) {
 	player.times = timesValues;
 
 	/* --- Licente --- */
-	const licenses = {
-		driving: { activeHours: rows.driving_license_active, suspendedHours: rows.driving_license_suspended },
-		weapon: { activeHours: rows.weapon_license_active, suspendedHours: rows.weapon_license_suspended },
-		fly: { activeHours: rows.fly_license_active, suspendedHours: rows.fly_license_suspended },
-		boat: { activeHours: rows.boat_license_active, suspendedHours: rows.boat_license_suspended }
-	};
-	player.licenses = licenses;
+	player.licenses = JSON.parse(rows.licenses);
 
 	/* --- RESET --- */
 	player.staff = false;
@@ -108,7 +102,7 @@ export function spawn_player(player: PlayerMp) {
 	player.health = 100;
 	player.model = mp.joaat(player.skin);
 
-	if (player.getVariable("registred") == true) SendMsg(player, COLORS.COLOR_SERVER, `Server: !{f9f9f9}Bine ai venit pe comunitatea noastra.`);
+	if (player.getVariable("registred") == true) SendMsg(player, COLORS.COLOR_SERVER, `Server: !{f9f9f9}Welcome on our community.`);
 	if (player.getVariable("registred") == true) player.setVariable("registred", false);
 
 	mp.events.call(RAGE_GENERAL_EVENTS.SET_PLAYER_HAIR, player, player.hair);

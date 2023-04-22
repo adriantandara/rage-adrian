@@ -168,7 +168,7 @@ mp.events.add(RAGE_GENERAL_EVENTS.START_VEHICLE_ENGINE, (player: PlayerMp) => {
             if (veh.getVariable("engine_status") == true) player.call(RAGE_CLIENT_EVENTS.SET_CLIENT_ENGINE_STATE, [false, player]);
             else player.call(RAGE_CLIENT_EVENTS.SET_CLIENT_ENGINE_STATE, [true, player]);
 
-            sendLocal(player, 'C2A2DA', 20, `* ${player.name} a ${veh.getVariable("engine_status") == true ? "pornit" : "oprit"} motorul vehiculului ${vehicleName}.`);
+            sendLocal(player, 'C2A2DA', 20, `* ${player.name} has ${veh.getVariable("engine_status") == true ? "started" : "turned off"} vehicle ${vehicleName}.`);
         }
     }
 });
@@ -237,7 +237,8 @@ mp.events.add(RAGE_GENERAL_EVENTS.REMOVE_PLAYER_HEL_MET, (player: PlayerMp) => {
 mp.events.add(RAGE_GENERAL_EVENTS.START_PLAYER_DMV, (player: PlayerMp) => {
 
     if (player.asset_dmv == true) return;
-    if (player.licenses.driving.activeHours > 0 || player.licenses.driving.suspendedHours > 0) return sendError(player, "Licenta ta de condus este suspendata sau este deja activa.");
+    if (player.licenses.driving_license.status == "suspended") return sendError(player, `Your driving license is suspended for ${player.licenses.driving_license.suspend_hours} more ${player.licenses.driving_license.suspend_hours < 2?`hour`:`hours`}.`);
+    if (player.licenses.driving_license.expiration_date > 0 ) return sendError(player, "Your driving license is already active.");
     if (player.vehicle) return;
 
 
@@ -251,9 +252,9 @@ mp.events.add(RAGE_GENERAL_EVENTS.START_PLAYER_DMV, (player: PlayerMp) => {
         player.asset_dmv = true;
 
         SendMsg(player, COLORS.COLOR_SERVER, `(#) Driving School:`);
-        SendMsg(player, 'f9f9f9', 'Testul pentru licenta de condus tocmai a inceput.');
-        SendMsg(player, 'f9f9f9', `Apasa tasta !{${COLORS.COLOR_SERVER}}2!{f9f9f9} pentru a porni motorul vehiculului.`);
-        SendMsg(player, 'f9f9f9', 'Odata ce vehiculul este pornit, urmareste checkpoint-urile de pe harta.');
+        SendMsg(player, COLORS.COLOR_SERVER, 'DMV: !{#FFFFFF}The exam has begin, please follow all the instructions below.');
+        SendMsg(player, COLORS.COLOR_SERVER, `DMV: !{#FFFFFF}Press !{${COLORS.COLOR_SERVER}}2!{f9f9f9} to start the vehicle.`);
+        SendMsg(player, COLORS.COLOR_SERVER, `DMV: !{#FFFFFF}After you started the vehicle's engine, please follow all the checkpoints marked by the Server.`);
     }, 100);
 });
 
@@ -264,11 +265,11 @@ mp.events.add(RAGE_GENERAL_EVENTS.ENTER_PLAYER_CHECKPOINT_DMV, async (player: Pl
         switch (player.asset_dmv_step) {
 
             case 7: {
-                let licenseName: any = "driving";
+                let licenseName: any = "driving_license";
 
                 player.asset_dmv = false; player.asset_dmv_step = -1; player.asset_dmv_vehicle.destroy(); player.asset_dmv_vehicle = null;
                 player.call(RAGE_CLIENT_EVENTS.STOP_CLIENT_DMV); player.dimension = 0;
-                await license.addActiveHours(player, licenseName, 50);
+                await license.addActiveHours(player, licenseName, (Math.floor(Date.now() / 1000))+604800);
                 setTimeout(() => {
                     SendMsg(player, COLORS.COLOR_SERVER, `Driving School: !{f9f9f9}Felicitari, examenul a luat sfarsit si ai intrat pe pozitia !{${COLORS.COLOR_SERVER}}Passed!{f9f9f9}.`);
                     SendMsg(player, COLORS.COLOR_SERVER, `Driving School: !{f9f9f9}Asta inseamna ca ai obtinut licenta de condus pentru 50 de ore.`);

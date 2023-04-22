@@ -3,7 +3,7 @@ import { Database } from './database';
 import { formatNumber, SendMsg } from '../resources/functions';
 import { LicensesManager } from './licenses';
 
-type LicenseType = 'Driving' | 'Weapon' | 'Fly' | 'Boat';
+type LicenseType = 'Driving' | 'Weapon' | 'Flying' | 'Boat';
 
 const db = new Database();
 const licensesManager = new LicensesManager();
@@ -56,14 +56,23 @@ export class PaydayManager {
 			SendMsg(player, 'f9f9f9', `Ai primit ${hoursString} jucate (${minutesString}).`);
 			SendMsg(player, 'f9f9f9', `PayCheck: $${formatNumber(moneyReward)} | Bank Balance: $${formatNumber(player.bank)} | Respect Points: ${respect} | Respect Balance: ${player.respect}`);
 
-			for (const licenseType of ['Driving', 'Weapon', 'Fly', 'Boat'] as LicenseType[]) {
-				const license = player.licenses[licenseType];
-
-				if (license && license.activeHours > 0) {
-					await licensesManager.subtractActiveHours(player, licenseType, 1);
-
-					if (license.activeHours === 0) {
-						expiredLicenses.push(licenseType);
+			for (const licenseType of ['Driving', 'Weapon', 'Flying', 'Boat'] as LicenseType[]) {
+				switch(licenseType) {
+					case 'Driving': {
+						if(player.licenses.driving_license.expiration_date < Math.floor(Date.now() / 1000)) expiredLicenses.push(licenseType);
+						break;
+					}
+					case 'Weapon': {
+						if(player.licenses.weapon_license.expiration_date < Math.floor(Date.now() / 1000)) expiredLicenses.push(licenseType);
+						break;
+					}
+					case 'Flying': {
+						if(player.licenses.flying_license.expiration_date < Math.floor(Date.now() / 1000)) expiredLicenses.push(licenseType);
+						break;
+					}
+					case 'Boat': {
+						if(player.licenses.boat_license.expiration_date < Math.floor(Date.now() / 1000)) expiredLicenses.push(licenseType);
+						break;
 					}
 				}
 			}
@@ -71,9 +80,9 @@ export class PaydayManager {
 				SendMsg(player, 'f9f9f9', `Licenta de ${licenseType} ti-a expirat!`);
 			}
 
-			for (const licenseType of ['Driving', 'Weapon', 'Fly', 'Boat'] as LicenseType[]) {
+			for (const licenseType of ['Driving', 'Weapon', 'Flying', 'Boat'] as LicenseType[]) {
 				const license = player.licenses[licenseType];
-				if (license && license.suspendedHours > 0) {
+				if (license && license.suspend_hours > 0) {
 					await licensesManager.subtractSuspendedHours(player, licenseType, 1);
 				}
 			}

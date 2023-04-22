@@ -221,7 +221,7 @@ command.addCommand({
 		if (!id || !licenseName || !hours) {
 
 			sendUsage(player, '/agl <username/userID> <license name> <hours (0h - 300h)>');
-			return SendMsg(player, COLORS.COLOR_SERVER, "Licenses: !{f9f9f9}driving, weapon, gun, fly");
+			return SendMsg(player, COLORS.COLOR_SERVER, "Licenses: !{f9f9f9}driving, weapon, boat, flying");
 		}
 
 		const user: any = getNameByID(id);
@@ -229,12 +229,13 @@ command.addCommand({
 		if (!is_valid_license(licenseName)) {
 
 			sendError(player, "Invalid license type.");
-			return SendMsg(player, COLORS.COLOR_SERVER, "Licenses: !{f9f9f9}driving, weapon, gun, fly");
+			return SendMsg(player, COLORS.COLOR_SERVER, "Licenses: !{f9f9f9}driving, weapon, boat, flying");
 		}
 
 		if (parseInt(hours) < 0 || parseInt(hours) > 300) return sendError(player, "Invalid hours (0 - 300).");
-		await license.setActiveHours(user, licenseName, parseInt(hours));
-		await license.setSuspendedHours(user, licenseName, 0);
+		const new_name: any = licenseName + "_license";
+		await license.setActiveHours(user, new_name, parseInt(hours));
+		await license.setSuspendedHours(user, new_name, 0);
 		sendAdmins(COLORS.COLOR_SERVER, `Notice: !{f9f9f9}Admin ${player.name} i-a setat lui ${user.name} licenta de ${licenseName} pentru ${parseInt(hours)} ore.`);
 		SendMsg(user, COLORS.COLOR_SERVER, `Server: !{f9f9f9}Admin ${player.name} ti-a setat licenta de ${licenseName} pentru ${parseInt(hours)} ore.`);
 	}
@@ -250,7 +251,7 @@ command.addCommand({
 		if (!id || !licenseName || !hours) {
 
 			sendUsage(player, '/suspend <username/userID> <license name> <hours (0h - 20h)>');
-			return SendMsg(player, COLORS.COLOR_SERVER, "Licenses: !{f9f9f9}driving, weapon, gun, fly");
+			return SendMsg(player, COLORS.COLOR_SERVER, "Licenses: !{f9f9f9}driving, weapon, boat, flying");
 		}
 
 		const user: any = getNameByID(id);
@@ -258,12 +259,13 @@ command.addCommand({
 		if (!is_valid_license(licenseName)) {
 
 			sendError(player, "Invalid license type.");
-			return SendMsg(player, COLORS.COLOR_SERVER, "Licenses: !{f9f9f9}driving, weapon, gun, fly");
+			return SendMsg(player, COLORS.COLOR_SERVER, "Licenses: !{f9f9f9}driving, weapon, boat, flying");
 		}
 
 		if (parseInt(hours) < 1 || parseInt(hours) > 20) return sendError(player, "Invalid hours (1 - 20).");
-		await license.setSuspendedHours(user, licenseName, parseInt(hours));
-		await license.setActiveHours(user, licenseName, 0);
+		const new_name: any = licenseName + "_license";
+		await license.setSuspendedHours(user, new_name, parseInt(hours));
+		await license.setActiveHours(user, new_name, 0);
 		sendAdmins(COLORS.COLOR_SERVER, `Notice: !{f9f9f9}Admin ${player.name} i-a suspendat lui ${user.name} licenta de ${licenseName} pentru ${parseInt(hours)} ore.`);
 		SendMsg(user, COLORS.COLOR_SERVER, `Server: !{f9f9f9}Admin ${player.name} ti-a suspendat licenta de ${licenseName} pentru ${parseInt(hours)} ore`);
 	}

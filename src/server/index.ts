@@ -5,6 +5,7 @@ import './resources/events';
 import './resources/react';
 import './resources/vehicles';
 import './resources/wasted';
+import './resources/debugs';
 
 import './scripts/playerCommands';
 import './scripts/adminCommands';
@@ -14,7 +15,7 @@ import './scripts/serverJobs';
 import './scripts/serverBusiness';
 
 /* --- DISCORD --- */
-import './discord/index';
+//import './discord/index';
 
 /* --- JOBS --- */
 import './scripts/jobs/fisherman';

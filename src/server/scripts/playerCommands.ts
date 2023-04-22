@@ -25,6 +25,7 @@ command.addCommand({
     }
 });
 
+
 command.addCommand({
     name: 'buylevel',
     description: 'Buy level up.',
