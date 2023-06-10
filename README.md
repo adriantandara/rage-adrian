@@ -75,4 +75,4 @@ Imi pare rau pentru cod, nu este unul tocmai performant insa totusi as dori sa a
 
 Daca aveti probleme ma puteti contacta pe discord:
 
-# Adrian_#6651
+# adriantandara
